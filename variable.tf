@@ -19,8 +19,9 @@ variable "enable_dns_support" {
 }
 
 
-variable "enable_nat_gateway" {
+variable "create_nat_gateway" {
   default = true
+  type    = bool
 }
 
 variable "instance_tenancy" {

@@ -15,14 +15,16 @@ resource "aws_route_table" "private_route_table" {
 
 # attach nat gateway to the route table entry
 resource "aws_route" "private_route" {
+  count = var.create_nat_gateway ? 1 : 0
+
   route_table_id         = aws_route_table.private_route_table.id
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = aws_nat_gateway.this.id
+  nat_gateway_id         = element(aws_nat_gateway.this.*.id, 0)
 }
 
 # associate private subnets
 resource "aws_route_table_association" "subnets_private_association" {
-  count = length(var.private_subnets) > 0 ? length(var.private_subnets) : 0
+  count = var.create_nat_gateway ? 1 : 0
 
   subnet_id      = element(aws_subnet.private.*.id, count.index)
   route_table_id = aws_route_table.private_route_table.id
